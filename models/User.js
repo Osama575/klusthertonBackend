@@ -46,9 +46,13 @@ const DemographicsSchema = new mongoose.Schema({
     _id:false,
     country: String,
     state: String,
-    city: String,
     dateOfBirth: String,
     gender: String,
+});
+
+const ChatSchema = new mongoose.Schema({
+    _id:false,
+    sid: String,
 });
 
 const LearningInfoSchema = new mongoose.Schema({
@@ -84,6 +88,10 @@ const UserSchema = new mongoose.Schema({
     },
     demographics: {
         type: DemographicsSchema,
+    },
+
+    chat:{
+        type:ChatSchema
     },
 
     learningInfo:{

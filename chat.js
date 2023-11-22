@@ -1,35 +1,41 @@
+const axios = require('axios');
 const shortid = require('shortid');
 const { StreamChat } = require('stream-chat');
-const User = require('../Ravetech_Api/models/User')
+const User = require('../Ravetech_Api/models/User');
 
-// Initialize Stream Chat client with your API key and secret
 const apiKey = process.env.STREAM_KEY;
-const apiSecret = process.env.STREAM_SECRET;
-const chatClient = new StreamChat(apiKey, apiSecret);
+const serverURL = 'http://localhost:3000'; // Replace with your actual server URL
 
-// Function to create a group chat, add participants, and update user objects
-async function createGroupChat( users) {
+const chatClient = new StreamChat(apiKey);
+
+async function getUserToken(userId) {
+  try {
+    const response = await axios.get(`${serverURL}/generateToken/${userId}`);
+    return response.data.userToken;
+  } catch (error) {
+    console.error('Error getting user token:', error);
+    throw error;
+  }
+}
+
+async function createGroupChat(users) {
   try {
     const channelType = 'messaging';
-    // Generate a random and unique channel ID using shortid
     const groupId = shortid.generate();
 
-    // Create a channel of the specified type and ID
+    const userId = 'user-1'; // Replace with the actual user ID you want to connect
+    const userToken = await getUserToken(userId);
+
+    await chatClient.connectUser({ id: userId }, userToken);
+
     const channel = await chatClient.channel(channelType, groupId, {
-      name: `Group${groupId}`
-      // Additional custom channel data
+      name: `Group${groupId}`,
     });
 
-    // Create the channel
     await channel.create();
-
-    // Add participants to the channel
     await channel.addMembers(users);
 
-    // Save the group ID in your user database for each participant
     for (const userId of users) {
-      // Assume you have a MongoDB model named User and an updateOne method
-      // Adapt this part based on your actual database and data model
       await User.updateOne({ _id: userId }, { groupId });
     }
 
@@ -41,11 +47,9 @@ async function createGroupChat( users) {
   }
 }
 
-// Example usage:
-
 const users = ['user-1', 'user-2', 'user-3'];
 
-createGroupChat(channelType, users)
+createGroupChat(users)
   .then((groupId) => {
     console.log('Associated group ID:', groupId);
   })
@@ -53,4 +57,4 @@ createGroupChat(channelType, users)
     console.error('Error:', error);
   });
 
-  module.exports = createGroupChat
+module.exports = createGroupChat;

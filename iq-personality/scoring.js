@@ -7,7 +7,7 @@ const User = require('../models/User')
 module.exports = class IqScoring {
     constructor ( 
         userid, question_1, question_2, question_3, question_4, question_5, question_6, question_7, 
-        question_8, question_9, question_10, question_11) {
+        question_8, question_9, question_10) {
         this.userid = userid; // Store the userid
         this.question_1 = question_1;
         this.question_2 = question_2;
@@ -19,7 +19,6 @@ module.exports = class IqScoring {
         this.question_8 = question_8;
         this.question_9 = question_9;
         this.question_10 = question_10;
-        this.question_11 = question_11;
         this.extraversion_score = 0;
         this.openness_score = 0;
         this.conscientiousness = 0;
@@ -49,6 +48,13 @@ module.exports = class IqScoring {
             this.neuroticism += 1;
         };
     }
+
+    process_question_7 () {
+        if (this.question_7=="option_1") {
+            this.iq_score += 2;
+        };
+    };
+
 
     process_question_2 () {
         if (this.question_2=="option_1") {

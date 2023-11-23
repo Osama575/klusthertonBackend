@@ -3,6 +3,7 @@ const User = require('../models/User')
 const {StatusCodes} = require('http-status-codes')
 const {BadRequestError, UnauthenticatedError, NotFoundError} = require('../errors')
 var IqScoring = require('../iq-personality/scoring');
+var questions = require('../questions/question')
 
 
 const ipScoring = async ( req, res, next) => {
@@ -37,4 +38,14 @@ const ipScoring = async ( req, res, next) => {
         };
 };
 
-module.exports = {ipScoring};
+
+const question_controller = async (req, res, next) => {
+    try {
+        res.status(StatusCodes.OK).json({error:false, msg:'successful', data:questions})
+    } catch (error) {
+        res.status(StatusCodes.BAD_REQUEST).json({error:true, msg: error.message })
+    }
+};
+
+
+module.exports = {ipScoring, question_controller};

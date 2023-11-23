@@ -112,7 +112,15 @@ const UserSchema = new mongoose.Schema({
 
     resetPasswordExpires:{
         type:Date
-    }
+    },
+
+    scoringResult:{
+        type:Map
+    },
+
+    age: {
+        type:String
+    },
     
 });
 

@@ -1,6 +1,8 @@
 
 // scoring.js
 'use strict';
+const {NotFoundError, BadRequestError} = require('../errors')
+const User = require('../models/User')
 
 module.exports = class IqScoring {
     constructor ( 
@@ -137,18 +139,29 @@ module.exports = class IqScoring {
     };
 
     async process_question_6 () {
+        
         try {
+            let user_checker = await User.findById({ _id: this.userid });
+            if(user_checker.age) {
+                throw new NotFoundError("Changes cant be made");
+            }
+
             let changes = { age: this.question_6 };
             const result = await User.updateOne(
                 { _id: this.userid },
                 { $set: changes },
                 { runValidators: true }
             );
+            const here = {...changes}
+            console.log(`RESSUUULLLTTT    ${this.userid}`)
+            console.log(`RESSUUULLLTTT    ${here}`)
+
             if (result.nModified === 0) {
                 throw new NotFoundError("Error making changes");
             }          
         } catch (error) {
-            throw new NotFoundError("Error making changes");
+            console.log(`HHHHHEEEEERRRRRRRRREEEEE   ${error}`);
+            // throw new NotFoundError(error.message);
         }
     };
 

@@ -5,6 +5,6 @@ const router = express.Router()
 
 const {ipScoring} = require('../controllers/IPScoring')
 
-router.post('/scoring', ipScoring)
+router.post('/get-score/:id', ipScoring)
 
 module.exports = router

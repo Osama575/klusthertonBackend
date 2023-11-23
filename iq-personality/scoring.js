@@ -4,25 +4,26 @@
 
 module.exports = class IqScoring {
     constructor ( 
-        question_1, question_2, question_3, question_4, question_5, question_6, question_7, 
+        userid, question_1, question_2, question_3, question_4, question_5, question_6, question_7, 
         question_8, question_9, question_10, question_11) {
-        this.question_1 = question_1,
-        this.question_2 = question_2,
-        this.question_3 = question_3,
-        this.question_4 = question_4,
-        this.question_5 = question_5,
-        this.question_6 = question_6,
-        this.question_7 = question_7,
-        this.question_8 = question_8,
-        this.question_9 = question_9,
-        this.question_10 = question_10,
-        this.question_11 = question_11,
-        this.extraversion_score = 0,
-        this.openness_score = 0,
-        this.conscientiousness = 0,
-        this.agreeableness = 0,
-        this.neuroticism = 0,
-        this.iq_score = 0
+        this.userid = userid; // Store the userid
+        this.question_1 = question_1;
+        this.question_2 = question_2;
+        this.question_3 = question_3;
+        this.question_4 = question_4;
+        this.question_5 = question_5;
+        this.question_6 = question_6;
+        this.question_7 = question_7;
+        this.question_8 = question_8;
+        this.question_9 = question_9;
+        this.question_10 = question_10;
+        this.question_11 = question_11;
+        this.extraversion_score = 0;
+        this.openness_score = 0;
+        this.conscientiousness = 0;
+        this.agreeableness = 0;
+        this.neuroticism = 0;
+        this.iq_score = 0;
     }
 
      process_question_1 () {
@@ -135,9 +136,20 @@ module.exports = class IqScoring {
         };
     };
 
-    process_question_6 () {
-        // add age to user data
-
+    async process_question_6 () {
+        try {
+            let changes = { age: this.question_6 };
+            const result = await User.updateOne(
+                { _id: this.userid },
+                { $set: changes },
+                { runValidators: true }
+            );
+            if (result.nModified === 0) {
+                throw new NotFoundError("Error making changes");
+            }          
+        } catch (error) {
+            throw new NotFoundError("Error making changes");
+        }
     };
 
     process_question_7 () {
@@ -170,8 +182,6 @@ module.exports = class IqScoring {
             this.iq_score += 2;
         };
     }
-
-
 
     score_detail() {
         this.process_question_1();

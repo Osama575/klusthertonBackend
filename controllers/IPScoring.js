@@ -1,5 +1,7 @@
 'use strict';
-
+const User = require('../models/User')
+const {StatusCodes} = require('http-status-codes')
+const {BadRequestError, UnauthenticatedError} = require('../errors')
 var IqScoring = require('../iq-personality/scoring');
 
 
@@ -16,6 +18,9 @@ const ipScoring = async ( req, res, next) => {
         const data = iq_scoring.score_detail()
 
         try {
+            let changes = {
+                iqScore:data.iqScore, personalityScore:data.personalityScore};
+
             // Store users score
             const result = await User.updateOne(
                 { _id: userid },
@@ -24,12 +29,12 @@ const ipScoring = async ( req, res, next) => {
             );
         
             if (result.nModified === 0) {
-                throw new NotFoundError("Error making changes");
-          }
-
-        } catch (error) {
+                throw new NotFoundError("Error making changes")};
             
-        }
-        return data;
+                res.status(StatusCodes.OK).json({error:false, msg:'successful', data:data})
+        } catch (error) {
+            res.status(StatusCodes.BAD_REQUEST).json({errror:true, msg: error.message })
+        };
+};
 
-}
+module.exports = {ipScoring};

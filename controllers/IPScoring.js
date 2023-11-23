@@ -10,12 +10,12 @@ const ipScoring = async ( req, res, next) => {
     
     const userid = req.params.id;
     const {question_1, question_2, question_3, question_4, question_5, question_6, question_7, 
-        question_8, question_9, question_10,} = req.body;
+        question_8, question_9,} = req.body;
 
         try {
             const iq_scoring = new IqScoring(
                 userid, question_1, question_2, question_3, question_4, question_5, question_6, question_7, 
-            question_8, question_9, question_10);
+            question_8, question_9);
             
             const data = iq_scoring.score_detail();    
 

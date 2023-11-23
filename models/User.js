@@ -121,7 +121,6 @@ const UserSchema = new mongoose.Schema({
     age: {
         type:String
     },
-    
 });
 
 

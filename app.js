@@ -37,7 +37,7 @@ const authenticateUser = require('./middleware/authenticateUser')
 //routers
 const auth = require('./routes/auth')
 const user = require('./routes/user')
-
+const scoring = require('./routes/scoring')
 
 
 
@@ -72,6 +72,7 @@ app.get('/', (req, res) => {
 //routes
 app.use('/api/v1/auth', auth)
 app.use('/api/v1/user', user)
+app.use('/api/v1/scoring', scoring)
 
 
 

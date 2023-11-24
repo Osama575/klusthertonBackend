@@ -1,43 +1,44 @@
-const axios = require('axios');
-const shortid = require('shortid');
 const { StreamChat } = require('stream-chat');
+const shortid = require('shortid');
 const User = require('../Ravetech_Api/models/User');
+const connectDB = require('./db/connectdb')
+
+require('dotenv').config()
 
 const apiKey = process.env.STREAM_KEY;
-const serverURL = 'http://localhost:3000'; // Replace with your actual server URL
+const apiSecret = process.env.STREAM_SECRET;
 
-const chatClient = new StreamChat(apiKey);
-
-async function getUserToken(userId) {
-  try {
-    const response = await axios.get(`${serverURL}/generateToken/${userId}`);
-    return response.data.userToken;
-  } catch (error) {
-    console.error('Error getting user token:', error);
-    throw error;
-  }
-}
+const chatClient = StreamChat.getInstance(apiKey, apiSecret);
 
 async function createGroupChat(users) {
   try {
-    const channelType = 'messaging';
+    // Create or ensure users exist in Stream Chat
+    for (const userId of users) {
+      await chatClient.upsertUser({ id: userId });
+    }
+
     const groupId = shortid.generate();
 
-    const userId = 'user-1'; // Replace with the actual user ID you want to connect
-    const userToken = await getUserToken(userId);
-
-    await chatClient.connectUser({ id: userId }, userToken);
-
-    const channel = await chatClient.channel(channelType, groupId, {
+    const channel = chatClient.channel('messaging', groupId, {
+      created_by_id: 'system', // Your server-side user ID
+      members: users,
       name: `Group${groupId}`,
     });
 
     await channel.create();
-    await channel.addMembers(users);
+
+    await connectDB(process.env.MONGO_URL)
 
     for (const userId of users) {
-      await User.updateOne({ _id: userId }, { groupId });
+     const updateResult = await User.updateOne({ _id: userId }, {'chat.groupId': groupId });
+
+     // Check if the user was updated
+     if (updateResult.modifiedCount === 0) {
+      throw new Error(`User with ID ${userId} was not updated`);
     }
+  
+    }
+
 
     console.log('Group chat created successfully!');
     return groupId;
@@ -47,7 +48,7 @@ async function createGroupChat(users) {
   }
 }
 
-const users = ['user-1', 'user-2', 'user-3'];
+const users = ['6550d8cd5216cf345c6e5af9', '6550dd1c5861bd41a42eee8c', '6553dfb09b431e2334a0589e']; // Example of the userID passed in tthe callBack
 
 createGroupChat(users)
   .then((groupId) => {

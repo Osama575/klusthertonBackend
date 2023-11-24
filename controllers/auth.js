@@ -273,7 +273,7 @@ const googleCallback = async (req, res) => {
 
       res.status(200).json({ user: newUser, token: jwtToken });
     } else {
-      // User is already registered, you may want to handle this case
+      // User is already registered
       console.log('User is already registered');
       // Create a JWT token for authentication
       const jwtToken = jwt.sign({ email: email }, process.env.JWT_SECRET, {
@@ -292,8 +292,11 @@ const googleCallback = async (req, res) => {
   }
 };
 
-module.exports = googleCallback;
-
+const generateChatToken = async (req, res) => {
+  const { userId } = req.params;
+  const userToken = await chatClient.createToken(userId);
+  res.json({ userToken });
+}
 
 
 module.exports = {
@@ -302,5 +305,6 @@ module.exports = {
     forgotPassword,
     resetPassword,
     initiateOauth,
-    googleCallback
+    googleCallback,
+    generateChatToken
 }

@@ -3,7 +3,7 @@ const router = express.Router()
 
 
 
-const {registerUser,login, initiateOauth, googleCallback, forgotPassword, resetPassword} = require('../controllers/auth')
+const {registerUser,login, initiateOauth, googleCallback, forgotPassword, resetPassword, generateChatToken} = require('../controllers/auth')
 
 router.post('/login', login)
 router.post('/register', registerUser)
@@ -19,9 +19,8 @@ router.get('/google/callback',  googleCallback);
 
 // Add other OAuth 2.0 routes if needed
 
-// Protected Route (accessible only to authenticated users)
-// router.get('/profile', authenticateUser, (req, res) => {
-//   res.send(`Hello, ${req.user.firstName} ${req.user.lastName}!`);
-// });
+//Chat Auth For Client
+router.get('/chat/generateToken', generateChatToken)
+
 
 module.exports = router

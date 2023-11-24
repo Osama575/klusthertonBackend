@@ -46,8 +46,8 @@ const DemographicsSchema = new mongoose.Schema({
 });
 
 const ChatSchema = new mongoose.Schema({
-    _id: false,
-    sid: String,
+    _id:false,
+    groupId: String,
 });
 
 const LearningInfoSchema = new mongoose.Schema({
@@ -71,6 +71,7 @@ const AnalysisSchema = new mongoose.Schema({
 const CourseSchema = new mongoose.Schema({
     progress: String,
 });
+
 
 // Define User schema
 const UserSchema = new mongoose.Schema({

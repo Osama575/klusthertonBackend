@@ -2,7 +2,7 @@ require('dotenv').config()
 require('express-async-errors')
 require('./oauth2Client')
 //something
-const { StreamChat } = require('stream-chat');
+const { StreamChat } = require('stream-chat')
 
 //extra security packages
 const helmet = require('helmet');
@@ -26,8 +26,7 @@ const connectDB = require('./db/connectdb')
 
 const apiKey = process.env.STREAM_KEY;
 const apiSecret = process.env.STREAM_SECRET;
-console.log(apiKey)
-console.log(apiSecret)
+
 const chatClient = new StreamChat(apiKey, apiSecret, { allowServerSideConnect: true });
 
 const authenticateUser = require('./middleware/authenticateUser')
@@ -76,11 +75,7 @@ app.use('/api/v1/scoring', scoring)
 
 
 
-app.get('/generateToken/:userId', async (req, res) => {
-  const { userId } = req.params;
-  const userToken = await chatClient.createToken(userId);
-  res.json({ userToken });
-});
+
 
 
 app.use(notFoundMiddleware);

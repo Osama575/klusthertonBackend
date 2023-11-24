@@ -1,6 +1,6 @@
 const { StreamChat } = require('stream-chat');
 const shortid = require('shortid');
-const User = require('../Ravetech_Api/models/User');
+const User = require('././models/User');
 const connectDB = require('./db/connectdb');
 
 require('dotenv').config();

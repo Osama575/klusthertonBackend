@@ -111,33 +111,45 @@ module.exports = class IqScoring {
         };
     };
 
-    async process_question_7 () {
-        
+    async process_question_7() {
         try {
             let user_checker = await User.findById({ _id: this.userid });
-            if(user_checker.age) {
-                throw new NotFoundError("Changes cant be made");
+            if (user_checker.age) {
+                throw new Error("Changes can't be made");
             }
-
-            let changes = { age: this.question_7 };
+    
+            let age;
+            if (this.question_7 === "option_1") {
+                age = "16-25";
+            } else if (this.question_7 === "option_2") {
+                age = "26-35";
+            } else if (this.question_7 === "option_3") {
+                age = "36-45";
+            } else if (this.question_7 === "option_4") {
+                age = "46-55";
+            } else {
+                age = "Age not in specified ranges";
+            }
+    
+            let changes = { age: age };
             const result = await User.updateOne(
                 { _id: this.userid },
                 { $set: changes },
                 { runValidators: true }
             );
-            const here = {...changes}
-            console.log(`RESSUUULLLTTT    ${this.userid}`)
-            console.log(`RESSUUULLLTTT    ${here}`)
-
+    
+            console.log(`Result for user ${this.userid}:`, changes);
+    
             if (result.nModified === 0) {
-                throw new NotFoundError("Error making changes");
-            }          
+                throw new Error("Error making changes");
+            }
         } catch (error) {
-            console.log(`HHHHHEEEEERRRRRRRRREEEEE   ${error}`);
-            // throw new NotFoundError(error.message);
+            console.error(`Error processing question 7 for user ${this.userid}:`, error);
+            // If you have custom error handling, you can throw the error again here
+            // throw error;
         }
     };
-
+    
     process_question_8 () {
         if (this.question_8=="option_1") {
             this.extraversion_score += 1;

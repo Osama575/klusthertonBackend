@@ -17,7 +17,6 @@ const questions =  {
             {"name":"option_3", "value":"25"},
             {"name":"option_4", "value":"30"}
         ],
-        "answer": "20"
     },
     "question_3": {
         "question": "Imagine you're working on a challenging puzzle and you're stuck. What's your first reaction?",
@@ -29,9 +28,13 @@ const questions =  {
             {"name":"option_5", "value":"I might lose interest and move on to another activity."}
         ]
     },
-
     "question_4": {
-        "question": "What is your age?"
+        "question": "Jack is looking at Anne, but Anne is looking at George. Jack is married, but George is not. Is a married person looking at an unmarried person?",
+        "options": [
+            {"name":"option_1", "value":"Yes"},
+            {"name":"option_2", "value":"No"},
+            {"name":"option_3", "value":"Cannot be determined"}
+        ],
     },
     "question_5": {
         "question": "How do you prefer to spend your free time after school or on weekends?",
@@ -51,28 +54,18 @@ const questions =  {
             {"name":"option_3", "value":"36"},
             {"name":"option_4", "value":"42"}
         ],
-        "answer": "30"
     },
     "question_7": {
-        "question": "Jack is looking at Anne, but Anne is looking at George. Jack is married, but George is not. Is a married person looking at an unmarried person?",
+        "question": "What is your age?",
         "options": [
-            {"name":"option_1", "value":"Yes"},
-            {"name":"option_2", "value":"No"},
-            {"name":"option_3", "value":"Cannot be determined"}
+            {"name":"option_1", "value":"16-25"},
+            {"name":"option_2", "value":"26-35"},
+            {"name":"option_3", "value":"36-45"},
+            {"name":"option_4", "value":"46-55"}
         ],
-        "answer": "Yes"
+
     },
     "question_8": {
-        "question": "What is your most preferred language?",
-        "options": [
-            {"name":"option_1", "value":"English"},
-            {"name":"option_2", "value":"French"},
-            {"name":"option_3", "value":"Spanish"},
-            {"name":"option_4", "value":"Dutch"},
-            {"name":"option_5", "value":"Other: _______________"}
-        ]
-    },
-    "question_9": {
         "question": "If you had to choose, which activity would you enjoy the most?",
         "options": [
             {"name":"option_1", "value":"Debating a topic you're passionate about with others."},
@@ -82,7 +75,7 @@ const questions =  {
             {"name":"option_5", "value":"Setting a personal record in a sport or game."}
         ]
     },
-    "question_10": {
+    "question_9": {
         "question": "How do you deal with unexpected changes to your plans?",
         "options": [
             {"name":"option_1", "value":"I quickly adjust and create a new plan of action."},

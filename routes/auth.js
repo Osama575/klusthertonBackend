@@ -7,8 +7,8 @@ const {registerUser,login, initiateOauth, googleCallback, forgotPassword, resetP
 
 router.post('/login', login)
 router.post('/register', registerUser)
-router.post('/forgotPassword', forgotPassword)
-router.post('/resetPassword', resetPassword)
+router.patch('/forgotPassword', forgotPassword)
+router.patch('/resetPassword', resetPassword)
 // router.get('/banks', getBanks)
 
 

@@ -14,8 +14,8 @@ const ipScoring = async ( req, res, next) => {
 
         try {
             const iq_scoring = new IqScoring(
-                userid, question_1, question_2, question_3, question_4, question_5, question_6, question_7, 
-            question_8, question_9);
+                userid, question_1, question_2, question_3, question_4, question_5, question_6, question_7, question_8,
+             question_9);
             
             const data = iq_scoring.score_detail();    
 

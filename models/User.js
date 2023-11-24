@@ -1,6 +1,8 @@
 const mongoose = require('mongoose');
 const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
+const Course = require('./Course')
+
 require('dotenv').config(); // Ensure environment variables are properly loaded
 
 // Define Personal Info schema
@@ -46,9 +48,19 @@ const DemographicsSchema = new mongoose.Schema({
 });
 
 const ChatSchema = new mongoose.Schema({
-    _id:false,
-    groupId: String,
+    groups: [{
+        courseId: {
+            type: mongoose.Schema.Types.ObjectId,
+            ref: 'Course', // relationship to Course model
+            
+        },
+        groupId: {
+            type: String,
+           
+        }
+    }]
 });
+
 
 const LearningInfoSchema = new mongoose.Schema({
     _id: false,
@@ -61,6 +73,11 @@ const LearningInfoSchema = new mongoose.Schema({
     styles: {
         type: String,
         enum: ['visual', 'auditory', 'kinesthetic']
+    },
+
+    onBoarded:{
+        type:Boolean,
+        default:false
     }
 });
 
@@ -69,7 +86,7 @@ const AnalysisSchema = new mongoose.Schema({
 });
 
 const CourseSchema = new mongoose.Schema({
-    progress: String,
+    courses: Array,
 });
 
 

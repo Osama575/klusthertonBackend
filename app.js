@@ -37,6 +37,8 @@ const authenticateUser = require('./middleware/authenticateUser')
 const auth = require('./routes/auth')
 const user = require('./routes/user')
 const scoring = require('./routes/scoring')
+const chat = require('./routes/chat')
+const course = require('./routes/course')
 
 
 
@@ -63,15 +65,17 @@ app.use(session({ secret: process.env.SESSION_SECRET, resave: true, saveUninitia
 
 app.use('/api-docs',swaggerUi.serve,swaggerUi.setup(swaggerDocument));      
 app.get('/', (req, res) => {
-  res.send('<h1>Ravetech Api is live</h1><a href="/api-docs">API Documentation</a>');
+  res.send('<h1>Intelligo Api is live</h1>');
 })
 
 
 
 //routes
 app.use('/api/v1/auth', auth)
-app.use('/api/v1/user', user)
+app.use('/api/v1/user', authenticateUser, user)
 app.use('/api/v1/scoring', scoring)
+app.use('/api/v1/chat', chat)
+app.use('/api/v1/courses', course)
 
 
 

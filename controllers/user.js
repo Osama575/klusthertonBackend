@@ -82,8 +82,16 @@ if (!userExists) {
 
         // Extract relevant data from users, including only the relevant group
         const userData = users.map(user => {
-            const userObject = user.toObject();
+            const userObject = user.toObject({ flattenMaps: true }); // Convert Map to Object
+
+            // Filter the chat groups to include only the relevant group
             userObject.chat.groups = userObject.chat.groups.filter(group => group.courseId.toString() === courseId);
+
+            // Convert scoringResult Map to Object if necessary
+            if (userObject.scoringResult instanceof Map) {
+                userObject.scoringResult = Object.fromEntries(userObject.scoringResult);
+            }
+
             return userObject;
         });
 

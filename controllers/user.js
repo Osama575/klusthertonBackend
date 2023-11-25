@@ -74,7 +74,7 @@ if (!userExists) {
       }
   
       try {
-          const users = await User.find({ _id: { $in: userIds } });
+          const users = await User.find({ _id: { $in: userIds } }).select('IqScore personality levelOfEducation age gender course module');
   
           const userDatas = users.map(user => extractUserData2(user));
           

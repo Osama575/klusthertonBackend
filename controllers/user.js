@@ -66,10 +66,7 @@ if (!userExists) {
     
     return userData;
   }
-
-
-// Route to get users by course ID
-const getUserByGroupCourse = async (req, res) => {
+  const getUserByGroupCourse = async (req, res) => {
     try {
         const courseId = req.body.courseId;
 
@@ -81,15 +78,22 @@ const getUserByGroupCourse = async (req, res) => {
         // Find users who are in the chat group for the given course
         const users = await User.find({
             'chat.groups': { $elemMatch: { courseId: mongoose.Types.ObjectId(courseId) } }
-        }).select('_id IqScore personality levelOfEducation age gender chat'); // Modify the selected fields as needed
+        });
 
-        res.status(200).json(users);
+        // Extract relevant data from users, including only the relevant group
+        const userData = users.map(user => {
+            const userObject = user.toObject();
+            userObject.chat.groups = userObject.chat.groups.filter(group => group.courseId.toString() === courseId);
+            return userObject;
+        });
+
+        res.status(200).json(userData);
     } catch (error) {
         console.error('Error fetching users:', error);
-        res.status(500).json({ message: 'Error fetching users', error: error.message }
-    )}
-  
+        res.status(500).json({ message: 'Error fetching users', error: error.message });
+    }
 }
+
 
 const usersArray = async (req, res) => {
     const { userIds } = req.body; // Expecting an array of user IDs in the request body
@@ -112,14 +116,22 @@ const usersArray = async (req, res) => {
 };
 
 const extractUserData2 = (user) => {
-    const userData = Object.fromEntries(
-        Object.entries(user.toObject())
-            .filter(([key]) => key !== "password") // Exclude the "password" field
-            .filter(([key, value]) => value !== undefined)
+    let userData = user.toObject({ flattenMaps: true }); // Convert the user document to an object
+
+    // Exclude the "password" field and any undefined values
+    userData = Object.fromEntries(
+        Object.entries(userData)
+            .filter(([key]) => key !== "password" && userData[key] !== undefined)
     );
-    
+
+    // Convert Map to Object if scoringResult is a Map
+    if (userData.scoringResult instanceof Map) {
+        userData.scoringResult = Object.fromEntries(userData.scoringResult);
+    }
+
     return userData;
 };
+
 
 
   module.exports = {editUser, getUser, getUserByGroupCourse, usersArray}

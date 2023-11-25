@@ -3,10 +3,10 @@ const router = express.Router()
 
 const authenticateUser = require('../middleware/authenticateUser')
 
-const {editUser, getUser, getUsersArray} = require('../controllers/user')
+const {editUser, getUser, getUserByGroupCourse} = require('../controllers/user')
 
-router.patch('/editUser/:id', authenticateUser, editUser)
+router.patch('/editUser/:id', editUser)
 router.get('/:id', authenticateUser, getUser)
-router.get('/array/users', getUsersArray)
+router.get('/course/user', getUserByGroupCourse)
 
 module.exports = router

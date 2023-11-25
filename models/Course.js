@@ -5,13 +5,10 @@ const ModuleSchema = new mongoose.Schema({
         type: String,
         required: true
     },
-    description: {
-        type: String
-    },
-    videos: [{
-        videoTitle: String,
-        videoLink: String
-    }]
+    videoLink: {
+        type: String,
+        required: true
+    }
 }, { _id: false }); // Disable the _id field for each module
 
 const CourseSchema = new mongoose.Schema({

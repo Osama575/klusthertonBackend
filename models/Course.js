@@ -8,6 +8,10 @@ const ModuleSchema = new mongoose.Schema({
     videoLink: {
         type: String,
         required: true
+    },
+    moduleDuration:{
+        type:String,
+        required:true
     }
 }, { _id: false }); // Disable the _id field for each module
 

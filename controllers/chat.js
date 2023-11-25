@@ -1,4 +1,4 @@
-const createGroupChat = require('../chat');
+const {createGroupChat, addUsersToGroupChat} = require('../chat');
 const { StreamChat } = require('stream-chat');
 const User = require('../models/User')
 
@@ -68,8 +68,31 @@ const getUserGroupByCourse =   async (req, res) => {
     }
 };
 
+const addUsersToGroupController = async (req, res) => {
+    try {
+        // Extract groupId and userIds from the request body
+        const { groupId, userIds, courseId } = req.body;
+
+        // Validate input
+        if (!groupId || !userIds || !Array.isArray(userIds)) {
+            return res.status(400).json({ message: "Invalid request data" });
+        }
+
+        // Call the addUsersToGroupChat method
+        await addUsersToGroupChat(groupId, userIds, courseId);
+
+        // Send success response
+        res.status(200).json({ message: "Users added to group chat successfully" });
+    } catch (error) {
+        console.error('Error in addUsersToGroupController:', error);
+        res.status(500).json({ message: "Error adding users to group chat", error: error.message });
+    }
+};
+
+
 module.exports = {
     createGroupChatWithParticipants,
     generateChatToken,
-    getUserGroupByCourse
+    getUserGroupByCourse,
+    addUsersToGroupController
 }

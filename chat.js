@@ -50,4 +50,56 @@ async function createGroupChat(courseId, users) {
     }
 }
 
-module.exports = createGroupChat;
+async function addUsersToGroupChat(groupId, users, courseId) {
+    try {
+        // Connect to the database
+        await connectDB(process.env.MONGO_URL);
+
+        // Fetch the channel using the groupId
+        const channel = chatClient.channel('messaging', groupId);
+
+        // Ensure the channel exists
+        const state = await channel.watch();
+        if (!state) {
+            throw new Error(`Group with ID ${groupId} does not exist`);
+        }
+
+        for (const userId of users) {
+            // Create or ensure the user exists in Stream Chat
+            await chatClient.upsertUser({ id: userId });
+
+            // Check if user is already in the group
+            const user = await User.findOne({ _id: userId, 'chat.groups': { $elemMatch: { groupId } } });
+
+            if (!user) {
+                // User not in group, add to group chat in Stream Chat
+                await channel.addMembers([userId]);
+
+                // Update user's document in the database
+                const updateResult = await User.updateOne(
+                    { _id: userId },
+                    { $addToSet: { 'chat.groups': { courseId, groupId } } }
+                );
+
+                // Check if the user was updated
+                if (updateResult.modifiedCount === 0) {
+                    throw new Error(`User with ID ${userId} was not updated`);
+                }
+            }
+        }
+
+        console.log(`Users added to group chat with ID ${groupId} successfully!`);
+    } catch (error) {
+        console.error('Error adding users to group chat:', error);
+        throw error;
+    }
+}
+
+
+module.exports = {
+    createGroupChat,
+    addUsersToGroupChat
+};
+
+
+

@@ -91,5 +91,35 @@ const getUserByGroupCourse = async (req, res) => {
   
 }
 
+const usersArray = async (req, res) => {
+    const { userIds } = req.body; // Expecting an array of user IDs in the request body
 
-  module.exports = {editUser, getUser, getUserByGroupCourse}
+    // Validate the userIds input
+    if (!userIds || !Array.isArray(userIds)) {
+        return res.status(StatusCodes.BAD_REQUEST).json({ message: 'Invalid input: userIds must be an array' });
+    }
+
+    try {
+        const users = await User.find({ _id: { $in: userIds } });
+
+        const userDatas = users.map(user => extractUserData2(user));
+        
+        res.status(StatusCodes.OK).json(userDatas);
+    } catch (error) {
+        console.error('Error fetching users:', error);
+        res.status(StatusCodes.INTERNAL_SERVER_ERROR).json({ message: 'Error fetching users', error: error.message });
+    }
+};
+
+const extractUserData2 = (user) => {
+    const userData = Object.fromEntries(
+        Object.entries(user.toObject())
+            .filter(([key]) => key !== "password") // Exclude the "password" field
+            .filter(([key, value]) => value !== undefined)
+    );
+    
+    return userData;
+};
+
+
+  module.exports = {editUser, getUser, getUserByGroupCourse, usersArray}

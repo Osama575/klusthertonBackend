@@ -66,14 +66,8 @@ const LearningInfoSchema = new mongoose.Schema({
     _id: false,
     preference: String,
     goals: String,
-    experience: {
-        type: String,
-        enum: ['beginner', 'intermediate', 'advanced']
-    },
-    styles: {
-        type: String,
-        enum: ['visual', 'auditory', 'kinesthetic']
-    },
+    experience:String,
+    styles: String,
 
     onBoarded:{
         type:Boolean,

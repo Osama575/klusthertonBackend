@@ -73,7 +73,7 @@ app.get('/', (req, res) => {
 //routes
 app.use('/api/v1/auth', auth)
 app.use('/api/v1/user', authenticateUser, user)
-app.use('/api/v1/scoring', scoring)
+app.use('/api/v1/scoring', authenticateUser, scoring)
 app.use('/api/v1/chat', chat)
 app.use('/api/v1/courses', course)
 

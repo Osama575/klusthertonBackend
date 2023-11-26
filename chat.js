@@ -10,27 +10,29 @@ const apiSecret = process.env.STREAM_SECRET;
 
 const chatClient = StreamChat.getInstance(apiKey, apiSecret);
 
-async function createGroupChat(courseId, users) {
+async function createGroupChat(courseId, userIds) {
     try {
         // Connect to the database
         await connectDB(process.env.MONGO_URL);
 
         // Create or ensure users exist in Stream Chat
-        for (const userId of users) {
+        for (const userId of userIds) {
             await chatClient.upsertUser({ id: userId });
         }
 
         const groupId = shortid.generate();
 
+        // Create a new channel
         const channel = chatClient.channel('messaging', groupId, {
-            created_by_id: 'system', // Your server-side user ID
-            members: users.map(user => user.userId),
-            name: `Group${groupId}`,
+            created_by_id: 'system', // Replace with your server-side user ID
+            members: userIds,
+            name: `${groupId}`,
         });
 
         await channel.create();
 
-        for (const { userId } of users) {
+        // Update users with the new group chat information
+        for (const userId of userIds) {
             const updateResult = await User.updateOne(
                 { _id: userId },
                 { $addToSet: { 'chat.groups': { courseId, groupId } } }

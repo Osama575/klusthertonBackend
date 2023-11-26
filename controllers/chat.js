@@ -27,18 +27,24 @@ const createGroupChatWithParticipants = async (req, res) => {
         // Expecting an object in the request body with courseId and an array of userIds
         const { courseId, userIds } = req.body; 
 
-        // Check if courseId and userIds are provided
+        // Check if courseId and userIds are provided and userIds is an array
         if (!courseId || !userIds || !Array.isArray(userIds)) {
-            return res.status(400).json({ message: 'courseId and userIds are required' });
+            return res.status(400).json({ message: 'courseId and userIds are required and userIds must be an array' });
         }
 
-        const groupId = await createGroupChat(courseId, userIds.map(userId => ({ userId })));
+        // Ensure that userIds are strings
+        if (userIds.some(userId => typeof userId !== 'string')) {
+            return res.status(400).json({ message: 'All userIds must be strings' });
+        }
+
+        const groupId = await createGroupChat(courseId, userIds);
         res.status(200).json({ message: 'Group chat created successfully', groupId });
     } catch (error) {
         console.error(error);
         res.status(500).json({ message: 'Error creating group chat', error: error.message });
     }
 }
+
 
 const getUserGroupByCourse =   async (req, res) => {
     try {

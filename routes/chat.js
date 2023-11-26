@@ -7,7 +7,7 @@ const authenticateUser = require('../middleware/authenticateUser')
 
 const {createGroupChatWithParticipants, generateChatToken, getUserGroupByCourse, addUsersToGroupController} = require('../controllers/chat')
 
-router.post('/:id', createGroupChatWithParticipants)
+router.post('/group', createGroupChatWithParticipants)
 router.get('/user/:id', authenticateUser, generateChatToken)
 router.post('/groups/getUserGroup', authenticateUser, getUserGroupByCourse)
 router.post('/groups/addUsers', addUsersToGroupController)

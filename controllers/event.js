@@ -1,51 +1,113 @@
 const { google } = require('googleapis');
-const Event = require('./EventModel'); // Your event schema
+const Event = require('../models/Event'); // Your event schema
+const key = require('../intelligo-405118-6d9014e6c967.json')
 
 const scheduleStudySession = async (req, res) => {
-    const { tag, users, startTime, endTime } = req.body;
+    const { tag, users, startTime, endTime, groupId } = req.body;
 
     // Configure a JWT client with service account credentials
-    const auth = new google.auth.GoogleAuth({
-        keyFile: '../intelligo-405118-6d9014e6c967.json', // Path to your service account JSON key file
-        scopes: 'https://www.googleapis.com/auth/calendar',
-    });
+    const jwtClient = new google.auth.JWT(
+        key.client_email,
+        null,
+        key.private_key,
+        ['https://www.googleapis.com/auth/calendar'], // Scope for Google Calendar
+        "rave@foresightng.tech" // Email of the user to impersonate
+      );
+      
+      // Create the Calendar service.
+      const calendar = google.calendar({version: 'v3', auth: jwtClient});
 
-    const calendar = google.calendar({ version: 'v3', auth });
+
+    const event = {
+        summary: 'Study Session',
+        start: { dateTime: startTime, timeZone: 'Africa/Lagos' },
+        end: { dateTime: endTime, timeZone: 'Africa/Lagos' },
+        conferenceData: {
+            createRequest: {
+                requestId: `data-${Date.now()}`,       
+        },
+    },
+    attendees: users.map(email => ({ email })),
+        
+        
+    
+
+        
+        // Other event details
+    };
+
+    const response = await calendar.events.insert({
+        calendarId: 'primary',
+        resource: event,
+        conferenceDataVersion: 1,
+        sendNotifications: true,
+    });
+    
+    const meetLink = response.data.hangoutLink; // Google Meet link
+
+    if (tag === 'instant-meeting') {
+        return res.status(200).json({ meetLink });
+    } 
 
     for (const userEmail of users) {
-        const event = {
-            summary: 'Study Session',
-            start: { dateTime: startTime, timeZone: 'Africa/Lagos' },
-            end: { dateTime: endTime, timeZone: 'Africa/Lagos' },
-            attendees: [{ email: userEmail }],
-            conferenceData: { createRequest: { requestId: `data-${Date.now()}` } },
-            // Other event details
-        };
-
-
-
         try {
-            const response = await calendar.events.insert({
-                calendarId: 'primary', // Or the specific calendar ID of the admin or the user
-                resource: event,
-                conferenceDataVersion: 1,
-                sendNotifications: true, // If you want to send email notifications to attendees
-                auth: await auth.getClient(), // Authenticate as the service account
-            });
-
-            const meetLink = response.data.hangoutLink; // Google Meet link
-            await Event.create({ ...event, link: meetLink, users, createdAt: new Date(), tag });
-
-            if (tag === 'instant-meeting') {
-                return res.status(200).json({ meetLink });
-            }
+        
+           console.log(userEmail)
         } catch (error) {
             console.error('Error creating event:', error);
             return res.status(500).send('Error scheduling event');
         }
     }
+    const meetScheduled =   await Event.create({ ...event, link: meetLink, users, createdAt: new Date(), tag });
 
-    return res.status(201).send('Events scheduled successfully');
+    if(!meetScheduled) {
+        return res.status(500).json({message:'Event could not be scheduled, please try again'});
+      }
+    return res.status(201).json({message:'Events scheduled successfully', event:meetScheduled});
 };
 
-module.exports = scheduleStudySession;
+const extractEmails = async (req, res) => {
+    try {
+        const { groupId } = req.body;
+
+        // Fetch the group members from Stream Chat
+        const channel = chatClient.channel('messaging', groupId);
+        const state = await channel.watch();
+        const userIds = state.members.map(member => member.user_id);
+
+        // Query the database for user emails
+        const users = await User.find({ _id: { $in: userIds } });
+        const emails = users.map(user => user.email);
+
+        // Send response
+        res.status(200).json({ emails });
+    } catch (error) {
+        console.error('Error fetching group emails:', error);
+        res.status(500).json({ message: 'Error fetching group emails', error: error.message });
+    }
+};
+
+const getUpcomingEvents = async (req, res) => {
+    try {
+        const userId = req.user.userid; //  req.user.userid holds the current user's ID
+
+        // Fetch events for this user
+        const events = await Event.find({ 'users': userId });
+
+        // Filter out past events
+        const currentTime = new Date();
+        const upcomingEvents = events.filter(event => {
+            const startTime = new Date(event.startTime);
+            const endTime = new Date(event.endTime);
+            return currentTime <= endTime;
+        });
+
+        // Send response with upcoming events
+        res.status(200).json(upcomingEvents);
+    } catch (error) {
+        console.error('Error fetching upcoming events:', error);
+        res.status(500).json({ message: 'Error fetching upcoming events', error: error.message });
+    }
+};
+
+module.exports = {scheduleStudySession, extractEmails, getUpcomingEvents}

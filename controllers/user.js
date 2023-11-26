@@ -103,6 +103,38 @@ if (!userExists) {
 }
 
 
+const getCourseGroup = async (req, res) => {
+    try {
+        const courseId = req.body.courseId;
+        const userId = req.user.userid; // The authenticated user's ID is available here
+
+        // Validate if courseId is a valid ObjectId
+        if (!mongoose.Types.ObjectId.isValid(courseId)) {
+            return res.status(400).json({ message: 'Invalid courseId' });
+        }
+
+        // Find the specific user and check their chat groups for the given course
+        const user = await User.findOne({
+            _id: userId,
+            'chat.groups.courseId': mongoose.Types.ObjectId(courseId)
+        }, { 'chat.groups.$': 1 }); // Select only the matching group
+
+        if (!user || !user.chat || !user.chat.groups || user.chat.groups.length === 0) {
+            return res.status(404).json({ message: 'Group not found for the specified course' });
+        }
+
+        // Extract the groupId from the matched group
+        const groupId = user.chat.groups[0].groupId;
+
+        res.status(200).json({ groupId });
+    } catch (error) {
+        console.error('Error fetching user group:', error);
+        res.status(500).json({ message: 'Error fetching user group', error: error.message });
+    }
+};
+
+
+
 const usersArray = async (req, res) => {
     const { userIds } = req.body; // Expecting an array of user IDs in the request body
 
@@ -142,4 +174,4 @@ const extractUserData2 = (user) => {
 
 
 
-  module.exports = {editUser, getUser, getUserByGroupCourse, usersArray}
+  module.exports = {editUser, getUser, getUserByGroupCourse, usersArray, getCourseGroup, getCourseGroup}

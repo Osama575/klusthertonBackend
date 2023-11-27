@@ -26,7 +26,7 @@ async function createGroupChat(courseId, userIds) {
         const channel = chatClient.channel('messaging', groupId, {
             created_by_id: 'system', // Replace with your server-side user ID
             members: userIds,
-            name: `${groupId}`,
+            name: `group ${groupId}`,
         });
 
         await channel.create();

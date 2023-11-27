@@ -51,8 +51,8 @@ const DemographicsSchema = new mongoose.Schema({
 });
 
 const ChatSchema = new mongoose.Schema({
+    _id: false,
     groups: [{
-        _id: false,
         courseId: {
             type: mongoose.Schema.Types.ObjectId,
             ref: 'Course',

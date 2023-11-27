@@ -3,7 +3,6 @@ const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
 const Course = require('./Course')
 
-
 require('dotenv').config(); // Ensure environment variables are properly loaded
 
 // Define Personal Info schema
@@ -11,23 +10,26 @@ const PersonalInfoSchema = new mongoose.Schema({
     _id: false,
     firstName: {
         type: String,
+        default: '',
         required: [true, 'Please provide your first name'],
         minlength: [2, 'Name too short'],
-        maxlength: [50, 'Name too long'], // Corrected from maxLength to maxlength
+        maxlength: [50, 'Name too long'],
         lowercase: true,
     },
     lastName: {
         type: String,
-        maxlength: [50, 'Name too long'], // Corrected from maxLength to maxlength
+        default: '',
+        maxlength: [50, 'Name too long'],
         lowercase: true,
     },
     password: {
         type: String,
-        required: false, // Make the password field optional
+        required: false,
         minlength: [3, 'Password must be at least 3 characters']
     },
     email: {
         type: String,
+        default: '',
         required: [true, 'Please provide your email'],
         match: [/^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/, 'Please provide a valid email'],
         unique: true,
@@ -42,44 +44,39 @@ const PersonalInfoSchema = new mongoose.Schema({
 // Define Demographics schema
 const DemographicsSchema = new mongoose.Schema({
     _id: false,
-    country: String,
-    state: String,
-    dateOfBirth: String,
-    gender: String,
+    country: { type: String, default: '' },
+    state: { type: String, default: '' },
+    dateOfBirth: { type: String, default: '' },
+    gender: { type: String, default: '' },
 });
 
 const ChatSchema = new mongoose.Schema({
     groups: [{
+        _id: false,
         courseId: {
             type: mongoose.Schema.Types.ObjectId,
-            ref: 'Course', // relationship to Course model
-            
+            ref: 'Course',
+            default: null
         },
         groupId: {
             type: String,
-           
+            default: ''
         }
     }]
 });
 
-
 const LearningInfoSchema = new mongoose.Schema({
     _id: false,
-    preference: String,
-    goals: String,
-    experience:String,
-    styles: String,
-
-    onBoarded:{
-        type:Boolean,
-        default:false
-    }
+    preference: { type: String, default: '' },
+    goals: { type: String, default: '' },
+    experience: { type: String, default: '' },
+    styles: { type: String, default: '' },
+    onBoarded: { type: Boolean, default: false }
 });
 
 const AnalysisSchema = new mongoose.Schema({
-    language: String
+    language: { type: String, default: '' }
 });
-
 
 // Define User schema
 const UserSchema = new mongoose.Schema({
@@ -87,10 +84,10 @@ const UserSchema = new mongoose.Schema({
         type: PersonalInfoSchema,
     },
     demographics: {
-        type: DemographicsSchema,
+        type: DemographicsSchema, default: {}
     },
     chat: {
-        type: ChatSchema
+        type: ChatSchema, default: {}
     },
     learningInfo: {
         type: LearningInfoSchema
@@ -99,7 +96,7 @@ const UserSchema = new mongoose.Schema({
         type: AnalysisSchema
     },
     courseInfo: {
-        type: Array
+        type: Array, default: []
     },
     resetPasswordToken: {
         type: String
@@ -111,7 +108,7 @@ const UserSchema = new mongoose.Schema({
         type: Map
     },
     age: {
-        type: String
+        type: String, default: ''
     },
 });
 
@@ -150,7 +147,6 @@ UserSchema.methods.createJWT = function () {
 
 UserSchema.methods.comparePassword = async function (loginPassword) {
     const isMatch = await bcrypt.compare(loginPassword, this.data.password);
-    console.log("isMatch:", isMatch);
     return isMatch;
 }
 

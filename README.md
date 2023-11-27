@@ -1,4 +1,4 @@
-# klusthertonBackend
+# Intelligo AI Model Doc
 
 The provided code describes two machine learning models (`SVMModel` and `Clustering`) and
 a service (`ModelService`) that integrates these models into a larger application. Here&#39;s a

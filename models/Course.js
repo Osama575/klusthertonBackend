@@ -38,6 +38,10 @@ const CourseSchema = new mongoose.Schema({
     users:{
         type:Array
     }, 
+
+    groups:{
+        type:Array
+    },
     
     modules: [ModuleSchema], // Array of modules
     createdAt: {

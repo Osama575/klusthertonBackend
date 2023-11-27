@@ -1,6 +1,7 @@
 const {createGroupChat, addUsersToGroupChat} = require('../chat');
 const { StreamChat } = require('stream-chat');
 const User = require('../models/User')
+const axios = require('axios')
 
 // Initialize Stream Chat client
 const chatClient = StreamChat.getInstance(process.env.STREAM_KEY, process.env.STREAM_SECRET);
@@ -95,10 +96,46 @@ const addUsersToGroupController = async (req, res) => {
     }
 };
 
+const model = async(req, res) => {
+    const {user_id, course_id} = req.body
+    const url_for = 'model_service'
+
+    const body = {
+        url_for: url_for,
+        user_id: user_id,
+        course_id: course_id
+    }
+    
+    const url = 'https://bcxafrkyjxv2swwjzm6lu5afui0ylfdw.lambda-url.eu-west-1.on.aws/'
+    try {
+        const response = await fetch(url, {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify(body),
+        });
+
+    
+        if (!response.ok) {
+          throw new Error(`Error: ${response.status}`);
+        }
+    
+        const data = await response.json();
+        res.status(200).json({data});
+      } catch (error) {
+        
+        throw error;
+      }
+    }
+
+
+
 
 module.exports = {
     createGroupChatWithParticipants,
     generateChatToken,
     getUserGroupByCourse,
-    addUsersToGroupController
+    addUsersToGroupController,
+    model
 }

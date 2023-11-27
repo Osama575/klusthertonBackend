@@ -52,15 +52,15 @@ const joinCourse = async (req, res) => {
         }
 
         // Check if the user is already registered for the course
-        const userAlreadyRegistered = await User.findOne({ _id: userId, 'courseInfo.courses': courseId });
-        if (userAlreadyRegistered) {
+        const course = await Course.findOne({ _id: courseId, 'users': userId });
+        if (course) {
             return res.status(202).json({ message: "User is already registered for this course" });
         }
 
-        // Add the course ID to the user's courses
-        const updateResult = await User.updateOne(
-            { _id: userId },
-            { $addToSet: { 'courseInfo.courses': courseId } } // Use $addToSet to prevent duplicates
+        // Add the user ID to the course's users array
+        const updateResult = await Course.updateOne(
+            { _id: courseId },
+            { $addToSet: { 'users': userId } } // Use $addToSet to prevent duplicates
         );
 
         if (updateResult.nModified === 0) {
@@ -73,6 +73,7 @@ const joinCourse = async (req, res) => {
         res.status(500).json({ message: 'Error joining course', error: error.message });
     }
 };
+
 
 
 

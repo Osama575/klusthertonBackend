@@ -50,22 +50,14 @@ if (!userExists) {
   
     const user = await User.findOne({ _id: userId });
   
-    const userData = extractUserData(user);
+    
       
     res.status(StatusCodes.OK).json({
-      userData,
+      userData:user,
     });
   };
   
-  const extractUserData = (user) => {
-    const userData = Object.fromEntries(
-      Object.entries(user.toObject())
-        .filter(([key]) => key !== "password") // Exclude the "password" field
-        .filter(([key, value]) => value !== undefined)
-    );
-    
-    return userData;
-  }
+  
   const getUserByGroupCourse = async (req, res) => {
     try {
         const courseId = req.body.courseId;

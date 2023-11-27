@@ -45,8 +45,6 @@ const joinCourse = async (req, res) => {
         const userId = req.user.userid; // Assuming the user ID is available in req.user
         const courseId = req.body.courseId; // The course ID to join
 
-        console.log(userId)
-
         if (!courseId) {
             return res.status(400).json({ message: "Course ID is required" });
         }
@@ -58,12 +56,21 @@ const joinCourse = async (req, res) => {
         }
 
         // Add the user ID to the course's users array
-        const updateResult = await Course.updateOne(
+        const updateCourse = Course.updateOne(
             { _id: courseId },
-            { $addToSet: { 'users': userId } } // Use $addToSet to prevent duplicates
+            { $addToSet: { 'users': userId } }
         );
 
-        if (updateResult.nModified === 0) {
+        // Add the course ID to the user's courseInfo array
+        const updateUser = User.updateOne(
+            { _id: userId },
+            { $addToSet: { 'courseInfo': courseId } }
+        );
+
+        // Execute both operations
+        const [updateCourseResult, updateUserResult] = await Promise.all([updateCourse, updateUser]);
+
+        if (updateCourseResult.nModified === 0 || updateUserResult.nModified === 0) {
             throw new Error('Unable to join course');
         }
 

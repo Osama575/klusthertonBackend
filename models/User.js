@@ -3,6 +3,7 @@ const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
 const Course = require('./Course')
 
+
 require('dotenv').config(); // Ensure environment variables are properly loaded
 
 // Define Personal Info schema
@@ -79,10 +80,6 @@ const AnalysisSchema = new mongoose.Schema({
     language: String
 });
 
-const CourseSchema = new mongoose.Schema({
-    courses: Array,
-});
-
 
 // Define User schema
 const UserSchema = new mongoose.Schema({
@@ -102,7 +99,7 @@ const UserSchema = new mongoose.Schema({
         type: AnalysisSchema
     },
     courseInfo: {
-        type: CourseSchema
+        type: Array
     },
     resetPasswordToken: {
         type: String

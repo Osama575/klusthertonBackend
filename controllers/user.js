@@ -97,8 +97,9 @@ if (!userExists) {
 
 const getCourseGroup = async (req, res) => {
     try {
-        const courseId = req.body.courseId;
-        const userId = req.user.userid; // The authenticated user's ID is available here
+        const courseId = req.body
+        const {userId} = req.params
+       
 
         // Validate if courseId is a valid ObjectId
         if (!mongoose.Types.ObjectId.isValid(courseId)) {

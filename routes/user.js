@@ -8,7 +8,7 @@ const {editUser, getUser, getUserByGroupCourse, usersArray, getCourseGroup} = re
 router.patch('/editUser/:id', editUser)
 router.get('/:id', authenticateUser, getUser)
 router.get('/course/user', getUserByGroupCourse)
-router.get('/course/getGroupName/:userId', getCourseGroup)
+router.post('/course/getGroupName/:userId', getCourseGroup)
 router.get('/array/users', usersArray)
 
 module.exports = router

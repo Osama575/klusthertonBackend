@@ -72,9 +72,7 @@ const login = async (req, res) => {
       throw new BadRequestError("Please provide your email and password");
     }
 
-    
-    const user = await User.findOne({ 'data.email':email })
-    
+    const user = await User.findOne({ 'data.email': email });
     
     if (!user) {
       throw new UnauthenticatedError("User does not exist");
@@ -87,13 +85,16 @@ const login = async (req, res) => {
     }
     
     const token = user.createJWT();
-    
-    res.status(StatusCodes.OK).json({ _id:user._id , token });
-  } catch (error) {console.log(error)
+
+    // Extract the onBoarded value from user's learningInfo
+    const onBoarded = user.learningInfo ? user.learningInfo.onBoarded : false;
+
+    res.status(StatusCodes.OK).json({ _id: user._id, onBoarded: onBoarded, token });
+  } catch (error) {
+    console.log(error);
     res.status(StatusCodes.BAD_REQUEST).json({ msg: error.message });
   }
 };
-
 
 
 // Forgot password to get reset code

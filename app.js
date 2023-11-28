@@ -39,7 +39,6 @@ const user = require('./routes/user')
 const scoring = require('./routes/scoring')
 const chat = require('./routes/chat')
 const course = require('./routes/course')
-const event = require('./routes/event')
 
 
 
@@ -78,7 +77,6 @@ app.use('/api/v1/user', user)
 app.use('/api/v1/scoring', scoring)
 app.use('/api/v1/chat', chat)
 app.use('/api/v1/courses', course)
-app.use('/api/v1/event', event)
 
 
 

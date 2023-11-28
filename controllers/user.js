@@ -104,7 +104,7 @@ const getCourseGroup = async (req, res) => {
         // Find the specific user and check their chat groups for the given course
         const user = await User.findOne({
             _id: userId,
-            'chat.groups.courseId': mongoose.Types.ObjectId(courseId)
+            'chat.groups.courseId': courseId
         }, { 'chat.groups.$': 1 }); // Select only the matching group
 
         if (!user || !user.chat || !user.chat.groups || user.chat.groups.length === 0) {

@@ -54,7 +54,7 @@ const ChatSchema = new mongoose.Schema({
     _id: false,
     groups: [{
         courseId: {
-            type: mongoose.Schema.Types.ObjectId,
+            type: String,
             ref: 'Course',
             default: null
         },

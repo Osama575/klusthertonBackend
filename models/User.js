@@ -56,7 +56,6 @@ const ChatSchema = new mongoose.Schema({
         courseId: {
             type: String,
             ref: 'Course',
-            default: null
         },
         groupId: {
             type: String,

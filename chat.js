@@ -22,11 +22,23 @@ async function createGroupChat(courseId, userIds) {
 
         const groupId = shortid.generate();
 
+         // Find the course in the database
+         const course = await Course.findById(courseId);
+         if (!course) {
+             throw new Error('Course not found');
+         }
+
+         // Generate a unique group chat name
+        const randomNumber = Math.floor(Math.random() * 100); // Two-digit random number
+        const groupName = `${course.name}-${randomNumber}`;
+
+ 
+
         // Create a new channel
         const channel = chatClient.channel('messaging', groupId, {
             created_by_id: 'system', // Replace with your server-side user ID
             members: userIds,
-            name: `group ${groupId}`,
+            name: groupName,
         });
 
         await channel.create();

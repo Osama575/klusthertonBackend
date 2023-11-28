@@ -101,11 +101,6 @@ const getCourseGroup = async (req, res) => {
         const {userId} = req.params
        
 
-        // Validate if courseId is a valid ObjectId
-        if (!mongoose.Types.ObjectId.isValid(courseId)) {
-            return res.status(400).json({ message: 'Invalid courseId' });
-        }
-
         // Find the specific user and check their chat groups for the given course
         const user = await User.findOne({
             _id: userId,

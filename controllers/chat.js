@@ -59,14 +59,14 @@ const getUserGroupByCourse =   async (req, res) => {
         const user = await User.findOne({ _id: userId, 'chat.groups.courseId': courseId });
 
         if (!user) {
-            return res.status(404).json({ message: 'No user found for the specified course' });
+            return res.status(200).json({ message: 'No group found for the specified course' });
         }
 
         const group = user.chat.groups.find(group => group.courseId.toString() === courseId);
 
-        if (!group) {
-            return res.status(200).json({ message: 'No group found for the specified course' });
-        }
+        // if (!group) {
+        //     return res.status(200).json({ message: 'No courseId found for the specified course' });
+        // }
 
         res.status(200).json({ groupId: group.groupId });
     } catch (error) {

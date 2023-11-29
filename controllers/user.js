@@ -64,7 +64,7 @@ if (!userExists) {
 
         // Validate if courseId is a valid ObjectId
         if (!mongoose.Types.ObjectId.isValid(courseId)) {
-            return res.status(400).json({ message: 'Invalid courseId' });
+            return res.status(203).json({ message: 'Invalid courseId' });
         }
 
         // Find users who are in the chat group for the given course

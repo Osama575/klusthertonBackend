@@ -1,6 +1,7 @@
 const { StreamChat } = require('stream-chat');
 const shortid = require('shortid');
 const User = require('././models/User');
+const Course = require('././models/Course');
 const connectDB = require('./db/connectdb');
 
 require('dotenv').config();

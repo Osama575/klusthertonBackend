@@ -52,11 +52,13 @@ const getUserGroupByCourse =   async (req, res) => {
         const userId = req.user.userid; // Get user ID from authenticated user
         const { courseId } = req.body; // Extract courseId from request body
 
+        
         if (!courseId) {
             return res.status(400).json({ message: 'Course ID is required' });
         }
 
         const user = await User.findOne({ _id: userId, 'chat.groups.courseId': courseId });
+        console.log(userId)
 
         if (!user) {
             return res.status(200).json({ message: 'No group found for the specified course' });
@@ -113,18 +115,20 @@ const model = async(req, res) => {
           headers: {
             'Content-Type': 'application/json',
           },
-          body: JSON.stringify(body),
+          body: body,
         });
 
+console.log(response)
     
         if (!response.ok) {
-          throw new Error(`Error: ${response.status}`);
+          throw new Error(`Error: ${response.data}`);
         }
     
         const data = await response.json();
+        console.log(data)
         res.status(200).json({data});
       } catch (error) {
-        
+        console.log(error)
         throw error;
       }
     }

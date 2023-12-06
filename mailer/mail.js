@@ -34,6 +34,6 @@ async function sendEmail(userEmail, userName, courseName) {
 }
 
 // Usage example
-sendEmail('kayanleye@gmail.com', 'kehinde ayanleye', 'Project Management Fundamentals')
-    .then(() => console.log('Email sent successfully!'))
-    .catch(error => console.error('Failed to send email:', error));
+// sendEmail('kayanleye@gmail.com', 'kehinde ayanleye', 'Project Management Fundamentals')
+//     .then(() => console.log('Email sent successfully!'))
+//     .catch(error => console.error('Failed to send email:', error));

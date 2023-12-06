@@ -3,6 +3,8 @@ const shortid = require('shortid');
 const User = require('././models/User');
 const Course = require('././models/Course');
 const connectDB = require('./db/connectdb');
+const sendMail = require('./mailer/mail')
+
 
 require('dotenv').config();
 
@@ -102,6 +104,8 @@ async function addUsersToGroupChat(groupId, users, courseId) {
                 }
             }
         }
+
+        
 
         console.log(`Users added to group chat with ID ${groupId} successfully!`);
     } catch (error) {

@@ -28,7 +28,6 @@ const registerUser = async (req, res) => {
     const personalInfo = { firstName, lastName, email, password };
     // const learningInfo = { preference, goals, experience, styles};
 
-    
 
     // Use the create method to create a new user
     const user = await User.create({
